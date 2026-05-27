@@ -141,9 +141,50 @@ footer {
   color: #666;
   text-align: center;
 }
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 14px 0 8px;
+}
+.stack-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.stack-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+}
+.stack-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 10px;
+  display: block;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #f7fafc;
+  border: 1px solid #edf2f7;
+}
+.stack-card h3 {
+  font-size: 14px;
+  color: #1a365d;
+  margin: 0 0 6px;
+  word-break: break-word;
+}
+.stack-card p {
+  font-size: 12px;
+  color: #4a5568;
+  line-height: 1.5;
+}
 @media (max-width: 640px) {
   .container { padding: 24px 18px; }
   .diff-grid, .dod-grid { grid-template-columns: 1fr; }
+  .stack-grid { grid-template-columns: repeat(2, 1fr); }
   h1 { font-size: 20px; }
 }
 </style>
@@ -164,6 +205,30 @@ footer {
   </div>
 
   <h2>1. 構成（Phase 1）</h2>
+
+  <div class="stack-grid">
+    <div class="stack-card">
+      <img class="stack-logo" src="https://avatars.githubusercontent.com/u/121283862?v=4" alt="ComfyUI logo" loading="lazy">
+      <h3>ComfyUI</h3>
+      <p>画像処理の土台（ローカル GPU）</p>
+    </div>
+    <div class="stack-card">
+      <img class="stack-logo" src="https://avatars.githubusercontent.com/u/119136212?v=4" alt="VNCCS Pose Studio logo" loading="lazy">
+      <h3>VNCCS Pose Studio</h3>
+      <p>ポーズ指示・編集（AHEKOT 製カスタムノード）</p>
+    </div>
+    <div class="stack-card">
+      <img class="stack-logo" src="https://avatars.githubusercontent.com/u/141221163?v=4" alt="Qwen logo" loading="lazy">
+      <h3>Qwen-Image-Edit-2511 GGUF</h3>
+      <p>画像生成・編集（Q5 / Q4 を VRAM 見合いで選択）</p>
+    </div>
+    <div class="stack-card">
+      <img class="stack-logo" src="https://avatars.githubusercontent.com/u/129358391?v=4" alt="ComfyUI-RMBG logo" loading="lazy">
+      <h3>ComfyUI-RMBG</h3>
+      <p>アニメ調背景削除（BiRefNet_toonOut）</p>
+    </div>
+  </div>
+
   <table>
     <tr><th width="30%">役割</th><th>採用ツール</th></tr>
     <tr><td>基盤</td><td>ComfyUI（ローカル GPU 環境）</td></tr>
