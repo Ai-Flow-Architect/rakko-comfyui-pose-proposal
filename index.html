@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>副業ラッコ平丸様 ComfyUI ポーズ変換 提案書</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  line-height: 1.7;
+  color: #222;
+  background: #f5f7fa;
+  padding: 20px;
+}
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 40px 48px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-radius: 8px;
+}
+header {
+  border-bottom: 3px solid #2c5282;
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-size: 24px;
+  color: #1a365d;
+  margin-bottom: 8px;
+}
+.meta {
+  font-size: 13px;
+  color: #555;
+}
+h2 {
+  font-size: 18px;
+  color: #1a365d;
+  border-left: 4px solid #2c5282;
+  padding-left: 10px;
+  margin: 28px 0 12px;
+}
+h3 {
+  font-size: 15px;
+  color: #2c5282;
+  margin: 16px 0 8px;
+}
+p, li { font-size: 14px; }
+ul, ol { margin-left: 22px; margin-top: 6px; }
+li { margin-bottom: 4px; }
+.pitch {
+  background: #ebf5ff;
+  border-left: 4px solid #3182ce;
+  padding: 16px 20px;
+  margin: 16px 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.price-box {
+  background: #fef5e7;
+  border: 2px solid #d69e2e;
+  border-radius: 6px;
+  padding: 18px 22px;
+  margin: 16px 0;
+}
+.price-main {
+  font-size: 22px;
+  font-weight: bold;
+  color: #975a16;
+  margin-bottom: 6px;
+}
+.price-detail { font-size: 13px; color: #5c4a0d; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+}
+th, td {
+  border: 1px solid #cbd5e0;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #edf2f7;
+  font-weight: 600;
+}
+.tag {
+  display: inline-block;
+  background: #2c5282;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  margin-right: 4px;
+}
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 12px 0;
+}
+.diff-card {
+  background: #f7fafc;
+  border-left: 3px solid #38a169;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+.diff-card strong { color: #22543d; display: block; margin-bottom: 4px; }
+.note {
+  background: #fff5f5;
+  border-left: 3px solid #c53030;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin: 10px 0;
+}
+.dod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 12px 0;
+}
+.dod-box {
+  border: 1px solid #cbd5e0;
+  border-radius: 5px;
+  padding: 12px 16px;
+}
+.dod-box.floor { background: #f0fff4; border-color: #38a169; }
+.dod-box.ceil { background: #ebf8ff; border-color: #3182ce; }
+.dod-box h4 { font-size: 14px; margin-bottom: 6px; }
+.dod-box.floor h4 { color: #22543d; }
+.dod-box.ceil h4 { color: #1a365d; }
+footer {
+  margin-top: 36px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .container { padding: 24px 18px; }
+  .diff-grid, .dod-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>ComfyUI ポーズ変換システム ローカル構築 提案書</h1>
+    <div class="meta">
+      副業ラッコ平丸 様　／　Coconala 案件番号 5052123（コペインターのローカル化）<br>
+      商談日：2026-05-27（水）19:15〜　／　提案：AIフローアーキテクト
+    </div>
+  </header>
+
+  <div class="pitch">
+    一行で：「コペインター」の <strong>背景削除＋ポーズ変換＋角度変換</strong> をローカル ComfyUI で実装。<br>
+    <strong>¥55,000 / 10時間</strong>、1サイクルを実機で動かしスクショで証拠化してから完納します。
+  </div>
+
+  <h2>1. 構成（Phase 1）</h2>
+  <table>
+    <tr><th width="30%">役割</th><th>採用ツール</th></tr>
+    <tr><td>基盤</td><td>ComfyUI（ローカル GPU 環境）</td></tr>
+    <tr><td>ポーズ抽出 / 編集</td><td>VNCCS Pose Studio</td></tr>
+    <tr><td>画像生成 / 編集</td><td>Qwen-Image-Edit-2511 GGUF（Q5 / Q4 をVRAM見合いで選択）</td></tr>
+    <tr><td>背景削除</td><td>ComfyUI-RMBG（BiRefNet_toonOut モデル：アニメ調に強い）</td></tr>
+  </table>
+
+  <h2>2. 価格・条件</h2>
+  <div class="price-box">
+    <div class="price-main">¥55,000（税込）／ 工数 10時間</div>
+    <div class="price-detail">
+      ・着手金 50%（¥27,500）前入金 ＋ <strong>全額返金保証</strong>付き<br>
+      ・本日相談料 ¥1,100 を差引 → <strong>実質 ¥53,900</strong><br>
+      ・残金 ¥27,500 は床ライン DoD 達成時にお支払い
+    </div>
+  </div>
+
+  <h2>3. 10時間の内訳</h2>
+  <table>
+    <tr><th>工程</th><th>時間</th></tr>
+    <tr><td>事前準備（環境調査・モデルDL段取り）</td><td>1.5h</td></tr>
+    <tr><td>TeamViewer 無人アクセス設定</td><td>0.5h</td></tr>
+    <tr><td>着手前ゲート（PC スペック・VRAM・ストレージ確認）</td><td>0.5h</td></tr>
+    <tr><td>ComfyUI 環境セットアップ（venv分離・カスタムノード導入）</td><td>1.5h</td></tr>
+    <tr><td>Qwen-Image-Edit-2511 GGUF 展開・動作確認</td><td>0.5h</td></tr>
+    <tr><td>1サイクル実機実証（背景削除→ポーズ変換）</td><td>1.5h</td></tr>
+    <tr><td>角度変換ワークフロー実装</td><td>1.0h</td></tr>
+    <tr><td>既知バグ対応バッファ</td><td>2.0h</td></tr>
+    <tr><td>PDF 1枚手順書作成</td><td>0.5h</td></tr>
+    <tr><td>納品デモ・合意確認</td><td>0.5h</td></tr>
+    <tr><td><strong>合計</strong></td><td><strong>10.0h</strong></td></tr>
+  </table>
+
+  <h2>4. 完納定義（DoD）</h2>
+  <div class="dod-grid">
+    <div class="dod-box floor">
+      <h4>床ライン（必達・これが揃ったら納品完了）</h4>
+      <ul>
+        <li>添付2キャラで <strong>1サイクル</strong>（背景削除→ポーズ変換→角度変換）を実機実証＋スクショ証拠化</li>
+        <li>ComfyUI サブグラフ化済 workflow JSON 納品</li>
+        <li>PDF 1枚 手順書納品</li>
+        <li>PC 再起動 → ComfyUI 起動 → workflow 読込まで動作確認</li>
+        <li><code>batch_wrapper.py</code> 雛形（Phase 2 接続用）同梱</li>
+      </ul>
+    </div>
+    <div class="dod-box ceil">
+      <h4>天井ライン（数値で品質を担保する目標）</h4>
+      <ul>
+        <li>顔同一性：ArcFace 距離 &lt; 0.3</li>
+        <li>ポーズ精度：DWPose MAE &lt; 10px</li>
+        <li>背景マスク：IoU &gt; 0.95</li>
+      </ul>
+      <p style="font-size:12px; margin-top:6px; color:#555;">※ 天井未達でも床ラインを満たせば納品成立。天井は追加チューニングで段階達成。</p>
+    </div>
+  </div>
+
+  <h2>5. 既知バグマトリクス（対応手順とセットで保証）</h2>
+  <table>
+    <tr><th>バグ</th><th>対応</th></tr>
+    <tr><td>Qwen-Image-Edit 黒画像出力（Issue #11865）</td><td>ノードバージョン固定 ＋ 設定値テンプレ適用</td></tr>
+    <tr><td>1024 正方形以外で破綻（Issue #243）</td><td>事前リサイズノード挿入 ＋ アスペクト比保持処理</td></tr>
+    <tr><td>Blackwell GPU の DLL エラー</td><td>CUDA / cuDNN バージョン整合 ＋ 公式 wheel 切替</td></tr>
+    <tr><td>VRAM 不足</td><td>GGUF Q5 → Q4 自動切替 ＋ tiled VAE 適用</td></tr>
+  </table>
+
+  <h3>未知バグへの 3回試行プロトコル</h3>
+  <ul>
+    <li>新規バグは <strong>3回までアプローチを変えて挑戦</strong>。4回目は打たず撤退ライン宣言</li>
+    <li>撤退時：未達項目を明示 ＋ 返金 or 部分納品 を平丸様にご選択いただきます</li>
+  </ul>
+
+  <h2>6. セキュリティ</h2>
+  <ul>
+    <li>TeamViewer 無人アクセス用 <strong>16文字パスワード</strong> 発行・作業後変更を平丸様に依頼</li>
+    <li>Python venv で完全分離（既存環境を汚さない）</li>
+    <li>作業前に <strong>snapshot 保存</strong>（万一の切り戻し対応）</li>
+  </ul>
+
+  <h2>7. Phase 2 接続プラン（将来拡張）</h2>
+  <p>
+    Phase 1 で <strong>ComfyUI workflow をサブグラフ化</strong>＋<code>batch_wrapper.py</code> 雛形を同梱しておくので、
+    Phase 2 は <strong>Gradio UI を追加するだけ</strong>で「複数キャラの一括処理 Web ツール」として完成します。
+    Phase 1 の構造を活かしたまま拡張できる設計です。
+  </p>
+
+  <h2>8. 差別化ポイント</h2>
+  <div class="diff-grid">
+    <div class="diff-card">
+      <strong>実証済 TeamViewer 型 リモート常駐スキーム</strong>
+      既存案件（inoshin252）で実証済。クライアント PC 上に常駐するシステムを非エンジニアの方でも運用可能な状態で納品する型を確立しています。
+    </div>
+    <div class="diff-card">
+      <strong>3AI 監査 92.0/100・成功確率 90.7%</strong>
+      本提案は 3系統の独立 AI 監査で 92.0 点・成功確率 90.7% を獲得。
+    </div>
+    <div class="diff-card">
+      <strong>AI 駆動開発で開発速度 2-3倍</strong>
+      最新の AI コーディング環境（AI ペアプロ）を全工程で活用し、同等案件比 2-3倍の速度で実装。10時間で完納できる根拠です。
+    </div>
+    <div class="diff-card">
+      <strong>着手金 50% ＋ 全額返金保証</strong>
+      床ライン DoD 未達なら全額返金。「動かないものに払う」リスクをこちらが負担します。
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>本日 19:15 商談のゴール</strong>：① 構成・価格・DoD のご合意　② 着手金 ¥27,500 の決済方法確認　③ TeamViewer 接続準備の段取り。商談内で 3点合意できれば、明日以降すぐ着手可能です。
+  </div>
+
+  <footer>
+    Proposal by AIフローアーキテクト　／　本提案書 URL：<br>
+    https://ai-flow-architect.github.io/rakko-comfyui-pose-proposal/
+  </footer>
+</div>
+</body>
+</html>
